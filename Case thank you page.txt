@@ -1,0 +1,27 @@
+<apex:page controller="SubmitCaseController" title="Case thank you page" 
+           showHeader="false" standardStylesheets="false">
+ <apex:form >
+		<br/>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+       
+    <apex:define name="body"> 
+        <br/>
+        <center>
+        <apex:outputText value="Thank you for contacting! Your Case has been Submitted." style="font-family:Arial;height:20px;width:300px;color:blue;"/>
+        <br/>
+        <br/>
+	   <br/>
+         <br/>
+         <apex:commandButton value="Return To HomePage" action="{!homepage}" style="color:#064322;margin-right:20px;height:25px"/>
+        </center>
+        <br/>
+        <br/>
+    </apex:define>
+    </apex:form> 
+  <!--</apex:composition>-->
+</apex:page>
+                   

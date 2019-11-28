@@ -1,0 +1,102 @@
+public class SubmitCaseController 
+{ 
+    public SubmitCaseController() {
+
+    }
+
+  
+   
+    public List<SelectOption> filesCountList {get; set;}
+    
+    public String FileCount {get; set;}
+    
+    public List<Attachment> allFileList {get; set;}
+    
+    public Case c { get; set; }
+    public String AccountName { get; set; }
+    
+    public SubmitCaseController (ApexPages.StandardController controller)
+    {
+        c = new Case();
+        filesCountList = new List<SelectOption>() ;
+        FileCount = '' ;
+        allFileList = new List<Attachment>() ;
+        
+       
+        for(Integer i = 1 ; i < 11 ; i++)
+            filesCountList.add(new SelectOption(''+i , ''+i)) ;
+    }
+    
+    public Pagereference SubmitCase()
+    {
+     List<Contact> cons = [SELECT Id, email, AccountId, CreatedDate FROM Contact WHERE email = :c.SuppliedEmail order by CreatedDate desc];
+     List<Account> acts = [SELECT Id, Seller_ID__c, CreatedDate FROM Account WHERE  Name = :AccountName order by CreatedDate desc];
+        if (cons.size() < 1) {
+            ApexPages.Message msg = new ApexPages.Message(ApexPages.Severity.WARNING, 'Please enter an Supplied Email that matches our records');
+            ApexPages.addMessage(msg);
+            return null;
+        } 
+		else if(acts.size() < 1){
+			ApexPages.Message msg = new ApexPages.Message(ApexPages.Severity.WARNING, 'Please enter an Account Name that matches our records');
+            ApexPages.addMessage(msg);
+            return null;
+		}
+		else {
+            try {
+                c.ContactId = cons.get(0).Id;
+                c.AccountId = acts.get(0).Id;
+                
+                Database.DMLOptions dmlOpts = new Database.DMLOptions();
+                dmlOpts.assignmentRuleHeader.useDefaultRule = true;
+                c.setOptions(dmlOpts);
+                c.Origin = 'Web';
+               
+                INSERT c;
+                
+        
+         if(filesCountList.size() > 0 ){
+           //  allFileList = new List<Attachment>() ;
+           
+            List<Attachment> listToInsert = new List<Attachment>() ;
+        
+        
+        for(Attachment a: allFileList)
+        {
+            if(a.name != '' && a.name != '' && a.body != null){
+                listToInsert.add(new Attachment(parentId = c.Id, name = a.name, body = a.body)) ;
+            }
+        }
+        
+        //Inserting attachments
+        if(listToInsert.size() > 0)
+        {
+            insert listToInsert ;
+            //ApexPages.addmessage(new ApexPages.message(ApexPages.Severity.INFO, listToInsert.size() + ' file(s) are uploaded successfully'));
+            FileCount = '' ;
+        }
+        }
+        /**else{
+            ApexPages.addmessage(new ApexPages.message(ApexPages.Severity.ERROR,'Please select at-least one file'));
+            
+        }**/
+        return new PageReference('/apex/casethankyou');
+                } catch (Exception e) {
+                ApexPages.addMessages(e);
+                return null;
+                }
+        }
+    }
+    
+    public PageReference ChangeCount()
+    {
+       allFileList.clear() ;
+        //Adding multiple attachments instance
+        for(Integer i = 1 ; i <= Integer.valueOf(FileCount) ; i++)
+            allFileList.add(new Attachment()) ;
+        return null ;
+    }
+    public PageReference homepage() 
+    {   
+        return new PageReference('/apex/SubmitCase');
+    }
+}

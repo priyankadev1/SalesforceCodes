@@ -1,0 +1,54 @@
+<apex:page standardController="Case" extensions="SubmitCaseController" docType="html-5.0" showHeader="false" sidebar="false" standardStylesheets="false">
+    <apex:form >
+  
+      <br/>
+      <br/>
+      <div align = "Center">  
+        <apex:pageBlock Case Submission Form>
+            <apex:pageMessages id="MSG"/>
+            <apex:actionFunction name="ChangeCount" action="{!ChangeCount}"/>
+                       
+                        <apex:inputText value="{!c.Reason}" style="font-family:Arial;height:20px;width:300px;" html-placeholder="Contact Reason" required="true"/>
+                            <p>   </p>         
+                        <apex:inputText value="{!AccountName}" style="font-family:Arial;height:20px;width:300px;" html-placeholder="Seller ID" required="true"/>
+                            <p>   </p>          
+                        <apex:inputText value="{!c.SuppliedCompany}" style="font-family:Arial;height:20px;width:300px;" html-placeholder="Business Name" required="true"/>
+                            <p>   </p>        
+                        <apex:inputText value="{!c.SuppliedEmail}" style="font-family:Arial;height:20px;width:300px;" html-placeholder="Your Email" required="true"/>
+                            <p>   </p> 
+                        <apex:inputText value="{!c.Subject}" style="font-family:Arial;height:20px;width:300px;" html-placeholder="Subject" required="true"/>
+                            <p>   </p>      
+                        <apex:inputText value="{!c.Description}" style="font-family:Arial;height:20px;width:300px;" html-placeholder="Please describe your issue" required="true"/>
+                 
+                 <br/>
+                 <br/>
+                           
+            <apex:pageblocksection >
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="How many files you want to upload?" />
+                    <apex:selectList onchange="ChangeCount() ;" multiselect="false" size="1" value="{!FileCount}">
+                        <apex:selectOption itemLabel="--None--" itemValue=""/>
+                        <apex:selectOptions value="{!filesCountList}"/>
+                    </apex:selectList>
+                </apex:pageBlockSectionItem>
+            </apex:pageblocksection>
+           
+            <apex:pageBlockSection title="Select Files" rendered="{!IF(FileCount != null && FileCount != '', true , false)}">
+                <apex:repeat value="{!allFileList}" var="AFL">
+                    <apex:inputfile value="{!AFL.body}" filename="{!AFL.Name}" accept="docx, txt, xlsx, pdf, png, jpeg, jpg" filesize="800" size="50"/>
+                    <br/>
+                </apex:repeat>
+            </apex:pageBlockSection>
+            <br/>
+            <br/>
+            <apex:pageBlockButtons location="bottom">
+                <apex:commandButton value="Submit Case"  action="{!SubmitCase}" style="color:#064322;margin-right:20px;height:25px"/>
+            </apex:pageBlockButtons>
+            
+        </apex:pageBlock>
+        </div>
+    </apex:form>
+</apex:page>
+                                        
+ 	 
+Copyright © 2000-2019 salesforce.com, inc. All rights reserved. | Privacy Statement | Security Statement | Terms of Use | 508 Compliance | Go to Salesforce mobile app
